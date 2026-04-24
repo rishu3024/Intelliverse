@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nexora — Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#0e0e0e", "on-background": "#e5e2e1",
+                        "on-surface": "#e5e2e1", "on-surface-variant": "#9a9a9a",
+                        "surface-bright": "#2a2a2a", "surface-container-low": "#1a1a1a",
+                        "surface-container-lowest": "#141414", "surface-container-high": "#252525",
+                        "surface-container-highest": "#302d2f",
+                        "primary": "#ebb2ff", "primary-container": "#bc13fe",
+                        "primary-fixed-dim": "#c98adb",
+                        "secondary": "#7dd3fc", "secondary-fixed-dim": "#56b4e8",
+                        "tertiary": "#fbbf24", "tertiary-fixed-dim": "#d4a017",
+                        "outline-variant": "#9d8ba0",
+                        "error": "#ff6b6b",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"],
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .ghost-border { border: 0.5px solid rgba(157, 139, 160, 0.25); }
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(24px);
+            border: 0.5px solid rgba(157, 139, 160, 0.25);
+        }
+        .primary-cta {
+            background: linear-gradient(135deg, #ebb2ff, #bc13fe);
+            color: #ffffff; border: 0.5px solid #9d8ba0;
+        }
+        .input-field {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(157, 139, 160, 0.3);
+            transition: all 0.2s ease;
+        }
+        .input-field:focus {
+            border-color: #ebb2ff;
+            box-shadow: 0 0 0 3px rgba(235, 178, 255, 0.1);
+            outline: none;
+        }
+        select.input-field { appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239a9a9a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .pulse-dot { animation: pulse-dot 2s ease infinite; }
+    </style>
+</head>
+
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+
+<!-- ═══ HEADER ═══ -->
+<div class="sticky top-0 z-30 w-full bg-background/90 backdrop-blur-xl ghost-border">
+<header class="max-w-[1440px] mx-auto w-full flex items-center justify-between px-6 md:px-10 py-4">
+    <div class="flex items-center gap-3">
+        <div class="h-8 w-8 rounded-lg overflow-hidden flex items-center justify-center" style="background: radial-gradient(circle, rgba(188,19,254,0.15), transparent 70%); box-shadow: 0 0 12px rgba(188,19,254,0.2);">
+            <img src="assets/nexora-logo.png" alt="Nexora" class="h-7 w-7 object-contain" style="border-radius: 4px;" />
+        </div>
+        <span class="font-headline text-xl text-on-surface tracking-tight">Nexora</span>
+    </div>
+    <nav class="hidden md:flex gap-8 items-center">
+        <a class="text-primary font-label text-sm font-bold flex items-center gap-2 border-b-2 border-primary pb-1" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+            Admin Portal
+        </a>
+        <a class="text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1" href="index.html">
+            <span class="material-symbols-outlined">grid_view</span>
+            SAM Dashboard
+        </a>
+    </nav>
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 ghost-border">
+            <span class="material-symbols-outlined text-primary text-sm">shield_person</span>
+            <span class="text-primary text-xs font-bold" id="admin-name">Admin</span>
+        </div>
+        <button onclick="logout()" class="text-on-surface-variant hover:text-error transition-colors" title="Sign Out">
+            <span class="material-symbols-outlined text-xl">logout</span>
+        </button>
+    </div>
+</header>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="flex-1 max-w-[1440px] mx-auto w-full p-6 md:p-10 flex flex-col gap-10">
+
+    <!-- Header -->
+    <section class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div>
+            <h1 class="font-headline text-4xl md:text-5xl text-on-surface mb-2">Admin Portal</h1>
+            <p class="text-on-surface-variant text-base">Manage vendor portal connections, credentials, and control deployments.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low ghost-border">
+                <span class="inline-block h-2 w-2 rounded-full bg-green-400 pulse-dot"></span>
+                <span class="text-on-surface-variant text-xs font-bold" id="ws-status">Connecting...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ ADD PORTAL FORM ═══ -->
+    <section class="bg-surface-container-lowest rounded-xl ghost-border p-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+        <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">add_link</span>
+                </div>
+                <h3 class="font-headline text-xl text-on-surface">Connect Vendor Portal</h3>
+            </div>
+
+            <form id="add-portal-form" onsubmit="addPortal(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Vendor Name *</label>
+                        <input id="f-vendor" type="text" placeholder="e.g. Autodesk" class="input-field w-full rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant" required/>
+                    </div>
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Portal URL *</label>
+                        <input id="f-url" type="url" placeholder="https://manage.vendor.com" class="input-field w-full rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant" required/>
+                    </div>
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Icon</label>
+                        <select id="f-icon" class="input-field w-full rounded-lg px-4 py-2.5 text-sm text-on-surface">
+                            <option value="business">business</option>
+                            <option value="architecture">architecture</option>
+                            <option value="palette">palette</option>
+                            <option value="window">window</option>
+                            <option value="chat">chat</option>
+                            <option value="cloud">cloud</option>
+                            <option value="code">code</option>
+                            <option value="security">security</option>
+                            <option value="storage">storage</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Strategy</label>
+                        <select id="f-strategy" class="input-field w-full rounded-lg px-4 py-2.5 text-sm text-on-surface">
+                            <option value="api">API Polling</option>
+                            <option value="rss">RSS / Atom Feed</option>
+                            <option value="rpa_scrape">RPA Scrape</option>
+                            <option value="webhook">Webhook Listener</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Portal Username</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">person</span>
+                            <input id="f-username" type="text" placeholder="portal_admin" class="input-field w-full rounded-lg pl-10 pr-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2 block">Portal Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">lock</span>
+                            <input id="f-password" type="password" placeholder="••••••••" class="input-field w-full rounded-lg pl-10 pr-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant" autocomplete="new-password"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="px-6 py-2.5 rounded-lg primary-cta font-label text-sm font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0_0_15px_rgba(235,178,255,0.3)]">
+                        <span class="material-symbols-outlined text-sm">link</span> Connect Portal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- ═══ CONNECTED PORTALS TABLE ═══ -->
+    <section>
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-headline text-xl text-on-surface">Connected Portals</h3>
+            <span class="text-on-surface-variant text-xs" id="portal-count"></span>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl ghost-border overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-outline-variant/20">
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Vendor</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Portal URL</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Strategy</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Credentials</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Status</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portals-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ DEPLOYMENT CONTROL ═══ -->
+    <section>
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-headline text-xl text-on-surface">Deployment Control</h3>
+            <button onclick="triggerSync()" class="px-4 py-2 rounded-lg ghost-border text-on-surface font-label text-xs font-bold hover:bg-surface-container-low transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm">sync</span> Sync All Portals
+            </button>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl ghost-border overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-outline-variant/20">
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Vendor</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Product</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Version</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Status</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deploy-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ SKILLS CONTROL PLANE ═══ -->
+    <section>
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h3 class="font-headline text-xl text-on-surface">Skill Control Plane</h3>
+                <p class="text-on-surface-variant text-sm mt-1">Govern curated skill repos, runtime adapters, and workflow bindings from the same admin surface.</p>
+            </div>
+            <span class="text-on-surface-variant text-xs" id="skill-count"></span>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl ghost-border overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-outline-variant/20">
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Skill</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Source</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Category</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Mode</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Workflow Bindings</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Last Result</th>
+                            <th class="px-6 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="skills-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ SKILL AUDIT TRAIL ═══ -->
+    <section>
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-headline text-xl text-on-surface">Skill Audit Trail</h3>
+            <span class="text-on-surface-variant text-xs">Enablement, dry runs, workflow binding changes, and failures</span>
+        </div>
+        <div class="bg-surface-container-low rounded-xl p-6 ghost-border">
+            <div class="flex flex-col gap-3 max-h-80 overflow-y-auto" id="skill-audit">
+                <p class="text-on-surface-variant text-sm italic">Waiting for skill activity...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ LIVE ACTIVITY FEED (WebSocket) ═══ -->
+    <section>
+        <div class="flex items-center gap-3 mb-4">
+            <h3 class="font-headline text-xl text-on-surface">Live Activity</h3>
+            <span class="bg-surface-container-highest text-on-surface-variant text-xs font-bold px-2 py-1 rounded-md ghost-border flex items-center gap-1.5">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-green-400 pulse-dot"></span> WebSocket
+            </span>
+        </div>
+        <div class="bg-surface-container-low rounded-xl p-6 ghost-border">
+            <div class="flex flex-col gap-2 max-h-72 overflow-y-auto" id="ws-feed">
+                <p class="text-on-surface-variant text-sm italic">Waiting for events...</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script src="auth.js"></script>
+
+<script>
+    const API_BASE = window.nexoraAuth.API_BASE;
+    let skillIndex = {};
+
+    // ─── Auth Guard ───
+    function authHeaders(extraHeaders = {}) {
+        return window.nexoraAuth.authHeaders({ 'Content-Type': 'application/json', ...extraHeaders });
+    }
+
+    function logout() {
+        window.nexoraAuth.clearSession();
+        window.location.href = 'login.html';
+    }
+
+    // ─── Load Portals ───
+    async function loadPortals() {
+        try {
+            const res = await fetch(API_BASE + '/admin/portals', { headers: authHeaders() });
+            const data = await res.json();
+            renderPortalsTable(data.portals || []);
+        } catch(e) { console.warn('Admin API unavailable:', e.message); }
+    }
+
+    function renderPortalsTable(portals) {
+        const tbody = document.getElementById('portals-table');
+        document.getElementById('portal-count').textContent = portals.length + ' portals connected';
+        if (!portals.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-on-surface-variant text-sm italic">No portals connected yet. Use the form above to add one.</td></tr>';
+            return;
+        }
+        const strategyLabel = { api: 'API Polling', rss: 'RSS Feed', rpa_scrape: 'RPA Scrape', webhook: 'Webhook' };
+        tbody.innerHTML = portals.map(p => `
+            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-sm">${p.vendor_icon || 'business'}</span>
+                        </div>
+                        <span class="text-on-surface text-sm font-bold">${p.vendor_name}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-on-surface-variant text-sm font-mono text-xs">${p.portal_url}</td>
+                <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold bg-surface-container-high text-on-surface-variant">${strategyLabel[p.strategy] || p.strategy}</span></td>
+                <td class="px-6 py-4">
+                    ${p.credential_status === 'stored'
+                        ? '<span class="flex items-center gap-1.5 text-green-400 text-xs font-bold"><span class="inline-block h-2 w-2 rounded-full bg-green-400"></span> Stored</span>'
+                        : '<span class="flex items-center gap-1.5 text-yellow-400 text-xs font-bold"><span class="inline-block h-2 w-2 rounded-full bg-yellow-400"></span> Missing</span>'}
+                </td>
+                <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold bg-green-500/10 text-green-400">${p.status}</span></td>
+                <td class="px-6 py-4 text-right">
+                    <button onclick="deletePortal('${p.id}')" class="px-3 py-1.5 rounded-lg ghost-border text-xs text-error font-bold hover:bg-error/10 transition-colors">Remove</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ─── Add Portal ───
+    async function addPortal(e) {
+        e.preventDefault();
+        const body = {
+            vendor_name: document.getElementById('f-vendor').value,
+            portal_url: document.getElementById('f-url').value,
+            vendor_icon: document.getElementById('f-icon').value,
+            strategy: document.getElementById('f-strategy').value,
+            portal_username: document.getElementById('f-username').value,
+            portal_password: document.getElementById('f-password').value,
+        };
+        try {
+            const res = await fetch(API_BASE + '/admin/portals', {
+                method: 'POST', headers: authHeaders(), body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            console.log('[ADMIN] Portal added:', data);
+            document.getElementById('add-portal-form').reset();
+            loadPortals();
+        } catch(e) { console.error('Add portal failed:', e); }
+    }
+
+    // ─── Delete Portal ───
+    async function deletePortal(id) {
+        try {
+            await fetch(API_BASE + '/admin/portals/' + id, { method: 'DELETE', headers: authHeaders() });
+            loadPortals();
+        } catch(e) { console.error('Delete failed:', e); }
+    }
+
+    // ─── Deployment Control ───
+    async function loadDeployments() {
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/updates');
+            const data = await res.json();
+            renderDeployTable(data.updates || []);
+        } catch(e) { console.warn('Updates API unavailable'); }
+    }
+
+    function renderDeployTable(updates) {
+        const tbody = document.getElementById('deploy-table');
+        if (!updates.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant text-sm italic">No updates. Click "Sync All Portals" to discover updates.</td></tr>';
+            return;
+        }
+        const statusBadge = (s) => {
+            const map = { pending_review: 'bg-yellow-500/10 text-yellow-400', deployed: 'bg-green-500/10 text-green-400', dismissed: 'bg-surface-container-high text-on-surface-variant' };
+            return `<span class="px-2.5 py-1 rounded-md text-xs font-bold ${map[s] || ''}">${s.replace('_',' ')}</span>`;
+        };
+        tbody.innerHTML = updates.map(u => `
+            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors">
+                <td class="px-6 py-4 text-on-surface text-sm">${u.vendor}</td>
+                <td class="px-6 py-4 text-on-surface text-sm font-bold">${u.product_name}</td>
+                <td class="px-6 py-4 text-on-surface text-sm font-mono">${u.version}</td>
+                <td class="px-6 py-4">${statusBadge(u.status)}</td>
+                <td class="px-6 py-4 text-right">
+                    ${u.status === 'pending_review' ? `
+                        <button onclick="adminDeploy('${u.id}')" class="px-3 py-1.5 rounded-lg primary-cta text-xs font-bold tracking-wide hover:opacity-90 transition-opacity mr-2 shadow-[0_0_10px_rgba(235,178,255,0.2)]">Deploy</button>
+                        <button onclick="adminDismiss('${u.id}')" class="px-3 py-1.5 rounded-lg ghost-border text-xs text-on-surface-variant font-bold hover:bg-surface-container-low transition-colors">Dismiss</button>
+                    ` : (u.status === 'deployed' ? '<span class="text-green-400 text-xs flex items-center gap-1 justify-end"><span class="material-symbols-outlined text-sm">check_circle</span> Deployed</span>' : '<span class="text-on-surface-variant text-xs">—</span>')}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function triggerSync() {
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/sync', { method: 'POST' });
+            const data = await res.json();
+            console.log('[ADMIN] Sync result:', data);
+            loadDeployments();
+        } catch(e) { console.error('Sync failed:', e); }
+    }
+
+    async function adminDeploy(id) {
+        try {
+            await fetch(API_BASE + '/v1/portal-sync/initiate/' + id, { method: 'POST' });
+            loadDeployments();
+        } catch(e) { console.error('Deploy failed:', e); }
+    }
+
+    async function adminDismiss(id) {
+        try {
+            await fetch(API_BASE + '/v1/portal-sync/dismiss/' + id, { method: 'POST' });
+            loadDeployments();
+        } catch(e) { console.error('Dismiss failed:', e); }
+    }
+
+    // ─── WebSocket Live Feed ───
+    async function loadSkills() {
+        try {
+            const res = await fetch(API_BASE + '/admin/skills', { headers: authHeaders() });
+            const data = await res.json();
+            renderSkillsTable(data.skills || [], data.runtime_enabled || 0);
+        } catch (e) {
+            console.warn('Skills API unavailable:', e.message);
+        }
+    }
+
+    function renderSkillsTable(skills, runtimeEnabledCount) {
+        const tbody = document.getElementById('skills-table');
+        skillIndex = Object.fromEntries(skills.map(skill => [skill.skill_id, skill]));
+        document.getElementById('skill-count').textContent = `${runtimeEnabledCount} runtime-enabled · ${skills.length} curated`;
+        if (!skills.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-on-surface-variant text-sm italic">No skill integrations registered yet.</td></tr>';
+            return;
+        }
+
+        const modeBadge = (skill) => {
+            if (skill.integration_mode === 'catalog_only') {
+                return '<span class="px-2.5 py-1 rounded-md text-xs font-bold bg-surface-container-high text-on-surface-variant">Catalog Only</span>';
+            }
+            if (skill.status === 'enabled') {
+                return '<span class="px-2.5 py-1 rounded-md text-xs font-bold bg-green-500/10 text-green-400">Runtime Enabled</span>';
+            }
+            return '<span class="px-2.5 py-1 rounded-md text-xs font-bold bg-yellow-500/10 text-yellow-400">Runtime Disabled</span>';
+        };
+
+        tbody.innerHTML = skills.map(skill => `
+            <tr class="border-b border-outline-variant/10 align-top hover:bg-surface-container-low/40 transition-colors">
+                <td class="px-6 py-4">
+                    <div class="space-y-1">
+                        <p class="text-on-surface text-sm font-bold">${skill.name}</p>
+                        <p class="text-on-surface-variant text-xs max-w-xs">${skill.description}</p>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <a class="text-secondary text-xs font-bold hover:underline" href="https://github.com/${skill.source_repo}" target="_blank" rel="noreferrer">${skill.source_repo}</a>
+                    <p class="text-on-surface-variant text-xs font-mono mt-1">${skill.source_path}</p>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-surface-container-high text-on-surface-variant">${skill.category}</span>
+                </td>
+                <td class="px-6 py-4">${modeBadge(skill)}</td>
+                <td class="px-6 py-4">
+                    ${skill.integration_mode === 'runtime_enabled' ? `
+                        <div class="space-y-2 min-w-[240px]">
+                            <input id="wf-${skill.skill_id}" value="${(skill.workflows || []).join(', ')}" class="input-field w-full rounded-lg px-3 py-2 text-xs text-on-surface placeholder-on-surface-variant" placeholder="agent_orchestration"/>
+                            <button onclick="saveSkillBindings('${skill.skill_id}')" class="px-3 py-1.5 rounded-lg ghost-border text-xs text-on-surface font-bold hover:bg-surface-container-low transition-colors">Save Bindings</button>
+                        </div>
+                    ` : '<span class="text-on-surface-variant text-xs">Cataloged for reference only in v1.</span>'}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="space-y-1 text-xs">
+                        <p class="text-on-surface font-bold">${skill.last_execution_status || 'No executions yet'}</p>
+                        <p class="text-on-surface-variant">${skill.last_validation_at ? 'Validated ' + new Date(skill.last_validation_at).toLocaleString() : 'Not validated yet'}</p>
+                        ${skill.last_failure_message ? `<p class="text-error">${skill.last_failure_message}</p>` : ''}
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex flex-col items-end gap-2">
+                        ${skill.integration_mode === 'runtime_enabled' ? `
+                            <button onclick="dryRunSkill('${skill.skill_id}')" class="px-3 py-1.5 rounded-lg ghost-border text-xs text-on-surface font-bold hover:bg-surface-container-low transition-colors">Dry Run</button>
+                            <button onclick="toggleSkill('${skill.skill_id}', ${skill.status !== 'enabled'})" class="px-3 py-1.5 rounded-lg ${skill.status === 'enabled' ? 'ghost-border text-on-surface-variant' : 'primary-cta'} text-xs font-bold hover:opacity-90 transition-opacity">${skill.status === 'enabled' ? 'Disable' : 'Enable'}</button>
+                        ` : '<span class="text-on-surface-variant text-xs">Execution disabled</span>'}
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function saveSkillBindings(skillId) {
+        const input = document.getElementById(`wf-${skillId}`);
+        const workflows = input.value.split(',').map(item => item.trim()).filter(Boolean);
+        try {
+            const res = await fetch(API_BASE + `/admin/skills/${skillId}/bind-workflows`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({ workflows }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.detail || 'Failed to update workflow bindings');
+            }
+            await loadSkills();
+            await loadSkillExecutions();
+        } catch (e) {
+            console.error('Workflow binding update failed:', e);
+            alert(e.message);
+        }
+    }
+
+    async function toggleSkill(skillId, enable) {
+        const endpoint = enable ? 'enable' : 'disable';
+        try {
+            const res = await fetch(API_BASE + `/admin/skills/${skillId}/${endpoint}`, {
+                method: 'POST',
+                headers: authHeaders(),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.detail || 'Failed to update skill state');
+            }
+            await loadSkills();
+            await loadSkillExecutions();
+        } catch (e) {
+            console.error('Skill toggle failed:', e);
+            alert(e.message);
+        }
+    }
+
+    async function dryRunSkill(skillId) {
+        try {
+            const res = await fetch(API_BASE + `/admin/skills/${skillId}/dry-run`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({ payload: { source: 'admin_ui', skill_id: skillId } }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.detail || 'Dry run failed');
+            }
+            await loadSkills();
+            await loadSkillExecutions();
+        } catch (e) {
+            console.error('Skill dry run failed:', e);
+            alert(e.message);
+        }
+    }
+
+    async function loadSkillExecutions() {
+        try {
+            const res = await fetch(API_BASE + '/admin/skills/executions', { headers: authHeaders() });
+            const data = await res.json();
+            renderSkillAudit(data.executions || [], data.audit_events || []);
+        } catch (e) {
+            console.warn('Skill executions API unavailable:', e.message);
+        }
+    }
+
+    function renderSkillAudit(executions, auditEvents) {
+        const audit = document.getElementById('skill-audit');
+        const executionItems = executions.map(item => ({
+            timestamp: item.timestamp,
+            icon: item.status === 'failed' ? 'warning' : 'verified',
+            title: `${item.skill_id} · ${item.workflow}`,
+            detail: `${item.status}${item.dry_run ? ' · dry run' : ''} · by ${item.triggered_by}`,
+        }));
+        const auditItems = auditEvents.map(item => ({
+            timestamp: item.timestamp,
+            icon: item.action.includes('disable') ? 'toggle_off' : 'tune',
+            title: `${item.skill_id} · ${item.action}`,
+            detail: `By ${item.performed_by}`,
+        }));
+        const items = [...executionItems, ...auditItems]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 12);
+        if (!items.length) {
+            audit.innerHTML = '<p class="text-on-surface-variant text-sm italic">Waiting for skill activity...</p>';
+            return;
+        }
+        audit.innerHTML = items.map(item => `
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary text-sm mt-0.5">${item.icon}</span>
+                <div class="flex-1">
+                    <p class="text-on-surface text-sm font-bold">${item.title}</p>
+                    <p class="text-on-surface-variant text-xs">${item.detail}</p>
+                    <p class="text-on-surface-variant text-xs mt-1">${new Date(item.timestamp).toLocaleString()}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    let ws;
+    function connectWebSocket() {
+        ws = new WebSocket('ws://localhost:8000/ws');
+        ws.onopen = () => {
+            document.getElementById('ws-status').textContent = 'Live';
+            addFeedEvent('system', 'WebSocket connected to NEXORA backend.');
+        };
+        ws.onmessage = (e) => {
+            try {
+                const msg = JSON.parse(e.data);
+                if (msg.event === 'pong') return;
+                handleWSEvent(msg);
+            } catch(err) {}
+        };
+        ws.onclose = () => {
+            document.getElementById('ws-status').textContent = 'Disconnected';
+            setTimeout(connectWebSocket, 3000);
+        };
+        ws.onerror = () => {
+            document.getElementById('ws-status').textContent = 'Error';
+        };
+    }
+
+    function handleWSEvent(msg) {
+        const icons = {
+            portal_added: 'add_link', portal_removed: 'link_off',
+            portal_synced: 'sync', deployment_complete: 'rocket_launch',
+            status_change: 'published_with_changes',
+            skill_enabled: 'toggle_on', skill_disabled: 'toggle_off',
+            skill_dry_run_complete: 'science', skill_execution_failed: 'warning',
+        };
+        const icon = icons[msg.event] || 'notifications';
+        let text = `[${msg.event}]`;
+        const d = msg.data || {};
+        if (msg.event === 'portal_added') text = `New portal connected: ${d.vendor} (${d.url})`;
+        if (msg.event === 'portal_removed') text = `Portal removed: ${d.connector_id}`;
+        if (msg.event === 'portal_synced') text = `Sync complete: ${d.new_updates} new updates found`;
+        if (msg.event === 'deployment_complete') text = `Deployed ${d.product} v${d.version} → Solar`;
+        if (msg.event === 'status_change') text = `Update ${d.update_id} → ${d.new_status}`;
+
+        if (msg.event === 'skill_enabled') text = `Skill enabled: ${d.name} by ${d.updated_by}`;
+        if (msg.event === 'skill_disabled') text = `Skill disabled: ${d.name} by ${d.updated_by}`;
+        if (msg.event === 'skill_dry_run_complete') text = `Dry run complete: ${d.skill_id} (${d.workflow})`;
+        if (msg.event === 'skill_execution_failed') text = `Skill execution failed for ${d.skill_id} (${d.workflow})`;
+
+        addFeedEvent(icon, text);
+
+        // Refresh tables on relevant events
+        if (['portal_added', 'portal_removed'].includes(msg.event)) loadPortals();
+        if (['portal_synced', 'deployment_complete', 'status_change'].includes(msg.event)) loadDeployments();
+        if (['skill_enabled', 'skill_disabled', 'skill_dry_run_complete', 'skill_execution_failed'].includes(msg.event)) {
+            loadSkills();
+            loadSkillExecutions();
+        }
+    }
+
+    function addFeedEvent(icon, text) {
+        const feed = document.getElementById('ws-feed');
+        if (feed.querySelector('.italic')) feed.innerHTML = '';
+        const time = new Date().toLocaleTimeString();
+        const el = document.createElement('div');
+        el.className = 'flex items-start gap-3 py-2 fade-in';
+        el.innerHTML = `
+            <span class="material-symbols-outlined text-primary text-sm mt-0.5">${icon}</span>
+            <div class="flex-1">
+                <p class="text-on-surface text-sm">${text}</p>
+                <p class="text-on-surface-variant text-xs">${time}</p>
+            </div>
+        `;
+        feed.prepend(el);
+    }
+
+    // ─── Init ───
+    async function bootstrapAdmin() {
+        const user = await window.nexoraAuth.requireRole('admin');
+        if (!user) {
+            return;
+        }
+        document.getElementById('admin-name').textContent = user.display_name;
+        loadPortals();
+        loadDeployments();
+        loadSkills();
+        loadSkillExecutions();
+        connectWebSocket();
+    }
+
+    document.addEventListener('DOMContentLoaded', bootstrapAdmin);
+</script>
+
+</body>
+</html>

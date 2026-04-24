@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nexora - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#e5e2e1",
+                        "on-primary-fixed-variant": "#74009f",
+                        "on-surface-variant": "#d4c0d7",
+                        "secondary-container": "#712094",
+                        "surface-bright": "#3a3939",
+                        "secondary": "#ebb2ff",
+                        "inverse-surface": "#e5e2e1",
+                        "on-tertiary-container": "#ffffff",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#f8d8ff",
+                        "error-container": "#93000a",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-primary": "#9800d0",
+                        "tertiary-fixed": "#ffddb8",
+                        "primary": "#ebb2ff",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#6e1d91",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface": "#e5e2e1",
+                        "surface-dim": "#131313",
+                        "primary-fixed-dim": "#ebb2ff",
+                        "tertiary-fixed-dim": "#ffb960",
+                        "surface-container-highest": "#353534",
+                        "surface": "#131313",
+                        "surface-container": "#201f1f",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-fixed-dim": "#ebb2ff",
+                        "tertiary": "#ffb960",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#520072",
+                        "surface-variant": "#353534",
+                        "on-secondary-fixed": "#320047",
+                        "on-primary-container": "#ffffff",
+                        "on-secondary-container": "#e49eff",
+                        "on-tertiary": "#472a00",
+                        "primary-fixed": "#f8d8ff",
+                        "tertiary-container": "#a76900",
+                        "primary-container": "#bc13fe",
+                        "on-primary-fixed": "#320047",
+                        "background": "#131313",
+                        "surface-tint": "#ebb2ff",
+                        "on-secondary": "#520072",
+                        "outline": "#9d8ba0",
+                        "on-tertiary-fixed": "#2b1700",
+                        "outline-variant": "#504254"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #131313;
+            color: #e5e2e1;
+        }
+        h1, h2, h3, h4, h5, h6, .font-headline {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.05em;
+        }
+        .glass-panel {
+            background-color: rgba(53, 53, 52, 0.4);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(80, 66, 84, 0.4);
+        }
+        .ghost-border {
+            border: 0.5px solid rgba(80, 66, 84, 0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #ebb2ff, #bc13fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .primary-cta {
+            background: linear-gradient(135deg, #ebb2ff, #bc13fe);
+            color: #ffffff;
+            border: 0.5px solid #9d8ba0;
+        }
+        .bulk-bar {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .custom-checkbox {
+            appearance: none; -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border: 1.5px solid rgba(157, 139, 160, 0.6);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+        .custom-checkbox:checked {
+            background: linear-gradient(135deg, #ebb2ff, #bc13fe);
+            border-color: #ebb2ff;
+        }
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute; top: 2px; left: 5px;
+            width: 5px; height: 9px;
+            border: solid #fff; border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .custom-checkbox:hover { border-color: #ebb2ff; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+
+<!-- Shared TopNavBar -->
+<div class="relative flex h-auto w-full flex-col bg-surface-container-lowest group/design-root overflow-x-hidden border-b border-outline-variant/40">
+<header class="flex items-center justify-between whitespace-nowrap px-10 py-4 max-w-[1440px] mx-auto w-full">
+    <div class="flex items-center gap-4 text-on-surface">
+        <div class="size-8 rounded-lg overflow-hidden flex items-center justify-center" style="background: radial-gradient(circle, rgba(188,19,254,0.15), transparent 70%); box-shadow: 0 0 12px rgba(188,19,254,0.2);">
+            <img src="assets/nexora-logo.png" alt="Nexora" class="size-7 object-contain" style="border-radius: 4px;" />
+        </div>
+        <h2 class="text-on-surface font-headline text-xl font-bold leading-tight tracking-wide">Nexora</h2>
+    </div>
+    <nav class="hidden md:flex gap-8 items-center">
+        <a class="text-primary font-label text-sm font-bold flex items-center gap-2 border-b-2 border-primary pb-1" href="#" data-page="dashboard">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+            Dashboard
+        </a>
+        <a class="text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1" href="#" data-page="licenses">
+            <span class="material-symbols-outlined">key</span>
+            Licenses
+        </a>
+        <a class="text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1" href="#" data-page="usage">
+            <span class="material-symbols-outlined">bar_chart</span>
+            Usage
+        </a>
+        <a class="text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1" href="#" data-page="action-feed">
+            <span class="material-symbols-outlined">list_alt</span>
+            Action Feed
+        </a>
+        <a class="text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1" href="#" data-page="portal-sync">
+            <span class="material-symbols-outlined">sync</span>
+            Portal Sync
+        </a>
+    </nav>
+    <div class="flex items-center gap-4">
+        <div class="relative w-48 hidden lg:block">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+            <input class="w-full bg-surface-container-low ghost-border rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" placeholder="Search..." type="text"/>
+        </div>
+        <button class="text-on-surface-variant hover:text-primary transition-colors relative" id="notifications-btn">
+            <span class="material-symbols-outlined text-xl">notifications</span>
+            <span class="absolute -top-1 -right-1 h-2 w-2 bg-primary-container rounded-full animate-pulse"></span>
+        </button>
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low ghost-border">
+            <span class="material-symbols-outlined text-primary text-sm">person</span>
+            <span class="text-on-surface text-xs font-bold" id="user-display">User</span>
+        </div>
+        <button onclick="logout()" class="text-on-surface-variant hover:text-error transition-colors" title="Sign Out">
+            <span class="material-symbols-outlined text-xl">logout</span>
+        </button>
+    </div>
+</header>
+</div>
+
+<!-- Main Content -->
+<main class="flex-1 max-w-[1440px] mx-auto w-full p-6 md:p-10 flex flex-col gap-10">
+
+    <!-- ═══ PAGE: DASHBOARD ═══ -->
+    <div id="page-dashboard">
+        <section class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div>
+                <h1 class="font-headline text-4xl md:text-5xl text-on-surface mb-2">Overview</h1>
+                <p class="text-on-surface-variant text-base">Monitor your SaaS licensing landscape and resource allocation.</p>
+            </div>
+            <div class="flex gap-4">
+                <button class="px-5 py-2.5 rounded-lg ghost-border bg-transparent text-on-surface font-label text-sm font-bold tracking-wide hover:bg-surface-container-low transition-colors">Export Report</button>
+                <button class="px-5 py-2.5 rounded-lg primary-cta font-label text-sm font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0_0_15px_rgba(235,178,255,0.3)]">
+                    <span class="material-symbols-outlined text-sm">add</span> Assign License
+                </button>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10" id="stats-grid">
+            <div class="bg-surface-container-low rounded-xl p-6 ghost-border flex flex-col gap-4 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <p class="text-on-surface-variant font-label text-sm uppercase tracking-wider font-bold">Total Licenses</p>
+                    <span class="material-symbols-outlined text-primary-fixed-dim">key</span>
+                </div>
+                <div class="relative z-10">
+                    <p class="font-headline text-3xl text-on-surface" id="stat-total-licenses">—</p>
+                    <p class="text-primary text-sm font-medium mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-xs">trending_up</span> +5% from last month</p>
+                </div>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-6 ghost-border flex flex-col gap-4 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <p class="text-on-surface-variant font-label text-sm uppercase tracking-wider font-bold">Active Usage</p>
+                    <span class="material-symbols-outlined text-secondary-fixed-dim">bolt</span>
+                </div>
+                <div class="relative z-10">
+                    <p class="font-headline text-3xl text-on-surface" id="stat-active-usage">—</p>
+                    <p class="text-primary text-sm font-medium mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-xs">trending_up</span> +2% from last month</p>
+                </div>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-6 ghost-border flex flex-col gap-4 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <p class="text-on-surface-variant font-label text-sm uppercase tracking-wider font-bold">Pending Reclaims</p>
+                    <span class="material-symbols-outlined text-tertiary-fixed-dim">published_with_changes</span>
+                </div>
+                <div class="relative z-10">
+                    <p class="font-headline text-3xl text-on-surface" id="stat-pending-reclaims">—</p>
+                    <p class="text-on-surface-variant text-sm font-medium mt-1 flex items-center gap-1">Needs review</p>
+                </div>
+            </div>
+            <div class="glass-panel rounded-xl p-6 flex flex-col gap-4 relative overflow-hidden group shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <p class="text-primary font-label text-sm uppercase tracking-wider font-bold">Est. Savings</p>
+                    <span class="material-symbols-outlined text-primary">savings</span>
+                </div>
+                <div class="relative z-10">
+                    <p class="font-headline text-3xl gradient-text" id="stat-savings">—</p>
+                    <p class="text-primary/80 text-sm font-medium mt-1">Potential monthly recovery</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+            <div class="lg:col-span-2 flex flex-col gap-8">
+                <div class="bg-surface-container-lowest rounded-xl p-6 ghost-border relative">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-headline text-xl text-on-surface">Usage Trends</h3>
+                            <p class="text-on-surface-variant text-sm mt-1">Platform engagement over last 30 days</p>
+                        </div>
+                        <button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors rounded-lg hover:bg-surface-container-low">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                    <div class="h-64 w-full relative mt-4">
+                        <div class="absolute left-0 top-0 bottom-8 w-8 flex flex-col justify-between text-xs text-on-surface-variant font-label text-right pr-2">
+                            <span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span>
+                        </div>
+                        <div class="absolute left-8 right-0 top-0 bottom-8 flex flex-col justify-between">
+                            <div class="w-full h-[0.5px] bg-outline-variant/20"></div><div class="w-full h-[0.5px] bg-outline-variant/20"></div><div class="w-full h-[0.5px] bg-outline-variant/20"></div><div class="w-full h-[0.5px] bg-outline-variant/20"></div><div class="w-full h-[0.5px] bg-outline-variant/20"></div>
+                        </div>
+                        <div class="absolute left-8 right-0 top-0 bottom-8 overflow-hidden">
+                            <svg class="w-full h-full drop-shadow-[0_10px_10px_rgba(235,178,255,0.2)]" preserveAspectRatio="none" viewBox="0 0 800 200">
+                                <defs><linearGradient id="chartGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#ebb2ff" stop-opacity="0.3"></stop><stop offset="100%" stop-color="#ebb2ff" stop-opacity="0"></stop></linearGradient></defs>
+                                <path d="M0,150 C100,140 200,80 300,100 C400,120 500,40 600,60 C700,80 800,20 800,20 L800,200 L0,200 Z" fill="url(#chartGrad)"></path>
+                                <path d="M0,150 C100,140 200,80 300,100 C400,120 500,40 600,60 C700,80 800,20 800,20" fill="none" stroke="#ebb2ff" stroke-linecap="round" stroke-width="2"></path>
+                                <circle cx="600" cy="60" fill="#0e0e0e" r="4" stroke="#ebb2ff" stroke-width="2"></circle>
+                            </svg>
+                            <div class="absolute right-[20%] top-[20%] glass-panel rounded-lg p-3 -translate-x-1/2 -translate-y-full mb-2">
+                                <p class="text-xs text-on-surface-variant mb-1">Nov 18</p>
+                                <p class="font-headline text-lg text-primary">82% Active</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-8 right-0 bottom-0 h-8 flex justify-between items-end text-xs text-on-surface-variant font-label">
+                            <span>Nov 01</span><span>Nov 08</span><span>Nov 15</span><span>Nov 22</span><span>Nov 30</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-6 ghost-border flex flex-col h-full">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-headline text-xl text-on-surface">Action Feed</h3>
+                    <span class="bg-surface-container-highest text-on-surface-variant text-xs font-bold px-2 py-1 rounded-md ghost-border">Real-time</span>
+                </div>
+                <div class="flex flex-col gap-2 flex-1" id="action-feed-list"></div>
+                <button class="mt-4 w-full py-3 text-primary text-sm font-bold tracking-wide hover:underline decoration-primary/50 underline-offset-4 text-center">View All Activity</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ PAGE: PORTAL SYNC ═══ -->
+    <div id="page-portal-sync" class="hidden">
+        <!-- Header -->
+        <section class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div>
+                <h1 class="font-headline text-4xl md:text-5xl text-on-surface mb-2">Portal Sync</h1>
+                <p class="text-on-surface-variant text-base">Vendor portals connected to NEXORA. Review updates and deploy to Solar.</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="triggerManualSync()" class="px-5 py-2.5 rounded-lg ghost-border bg-transparent text-on-surface font-label text-sm font-bold tracking-wide hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">sync</span> Sync Now
+                </button>
+                <button class="px-5 py-2.5 rounded-lg primary-cta font-label text-sm font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0_0_15px_rgba(235,178,255,0.3)]">
+                    <span class="material-symbols-outlined text-sm">add_link</span> Connect Portal
+                </button>
+            </div>
+        </section>
+
+        <!-- Connected Portals Strip -->
+        <section class="mt-8">
+            <h3 class="font-headline text-lg text-on-surface mb-4">Connected Portals</h3>
+            <div class="flex gap-4 overflow-x-auto pb-2" id="portals-strip"></div>
+        </section>
+
+        <!-- Sync Stats -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div class="bg-surface-container-low rounded-xl p-5 ghost-border flex items-center gap-4">
+                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><span class="material-symbols-outlined text-primary">cloud_download</span></div>
+                <div><p class="font-headline text-2xl text-on-surface" id="sync-total">0</p><p class="text-on-surface-variant text-xs uppercase tracking-wider font-bold">Total Updates</p></div>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-5 ghost-border flex items-center gap-4">
+                <div class="h-10 w-10 rounded-full bg-tertiary/10 flex items-center justify-center"><span class="material-symbols-outlined text-tertiary">pending_actions</span></div>
+                <div><p class="font-headline text-2xl text-on-surface" id="sync-pending">0</p><p class="text-on-surface-variant text-xs uppercase tracking-wider font-bold">Pending Review</p></div>
+            </div>
+            <div class="bg-surface-container-low rounded-xl p-5 ghost-border flex items-center gap-4">
+                <div class="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center"><span class="material-symbols-outlined text-secondary">deployed_code</span></div>
+                <div><p class="font-headline text-2xl text-on-surface" id="sync-deployed">0</p><p class="text-on-surface-variant text-xs uppercase tracking-wider font-bold">Deployed to Solar</p></div>
+            </div>
+        </section>
+
+        <!-- Updates Table -->
+        <section class="mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-headline text-lg text-on-surface">Discovered Updates</h3>
+                <span class="text-on-surface-variant text-xs" id="bulk-count-label"></span>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl ghost-border overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-outline-variant/20">
+                                <th class="pl-6 pr-2 py-4 w-10"><input type="checkbox" class="custom-checkbox" id="select-all-cb" onchange="toggleSelectAll(this)"/></th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Vendor</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Product</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Type</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Version</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Detected</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold">Status</th>
+                                <th class="px-4 py-4 text-on-surface-variant font-label text-xs uppercase tracking-wider font-bold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sync-updates-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating Bulk Action Bar -->
+        <div id="bulk-action-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bulk-bar">
+            <div class="glass-panel rounded-xl px-6 py-3 flex items-center gap-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                <span class="text-on-surface text-sm font-bold" id="bulk-selected-count">0 selected</span>
+                <div class="w-px h-6 bg-outline-variant/40"></div>
+                <button onclick="bulkInitiate()" class="px-4 py-2 rounded-lg primary-cta text-xs font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center gap-1.5 shadow-[0_0_12px_rgba(235,178,255,0.3)]">
+                    <span class="material-symbols-outlined text-sm">rocket_launch</span> Initiate Selected
+                </button>
+                <button onclick="bulkDismiss()" class="px-4 py-2 rounded-lg ghost-border text-xs text-on-surface-variant font-bold hover:bg-surface-container-low transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">do_not_disturb_on</span> Dismiss Selected
+                </button>
+                <button onclick="clearSelection()" class="p-2 text-on-surface-variant hover:text-on-surface transition-colors rounded-lg hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Audit Trail -->
+        <section class="mt-8">
+            <h3 class="font-headline text-lg text-on-surface mb-4">Deployment Audit Trail</h3>
+            <div class="bg-surface-container-low rounded-xl p-6 ghost-border">
+                <div class="flex flex-col gap-3" id="sync-audit-log">
+                    <p class="text-on-surface-variant text-sm italic">No deployments yet.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</main>
+
+<!-- ═══ DEPLOYMENT CONFIRMATION MODAL ═══ -->
+<div id="deploy-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);">
+    <div class="glass-panel rounded-xl p-8 w-full max-w-lg shadow-[0_30px_60px_rgba(0,0,0,0.6)] relative">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-xl"></div>
+        <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center"><span class="material-symbols-outlined text-primary">rocket_launch</span></div>
+                <h3 class="font-headline text-xl text-on-surface">Deploy to Solar</h3>
+            </div>
+            <div class="space-y-3 mb-8">
+                <div class="flex justify-between py-2 border-b border-outline-variant/20">
+                    <span class="text-on-surface-variant text-sm">Product</span>
+                    <span class="text-on-surface text-sm font-bold" id="modal-product">—</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-outline-variant/20">
+                    <span class="text-on-surface-variant text-sm">Version</span>
+                    <span class="text-on-surface text-sm font-bold" id="modal-version">—</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-outline-variant/20">
+                    <span class="text-on-surface-variant text-sm">Vendor</span>
+                    <span class="text-on-surface text-sm font-bold" id="modal-vendor">—</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span class="text-on-surface-variant text-sm">Target</span>
+                    <span class="text-primary text-sm font-bold" id="modal-target">Solar Repository</span>
+                </div>
+            </div>
+            <div class="flex gap-4 justify-end">
+                <button onclick="closeDeployModal()" class="px-5 py-2.5 rounded-lg ghost-border bg-transparent text-on-surface font-label text-sm font-bold tracking-wide hover:bg-surface-container-low transition-colors">Cancel</button>
+                <button onclick="confirmDeploy()" class="px-5 py-2.5 rounded-lg primary-cta font-label text-sm font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0_0_15px_rgba(235,178,255,0.3)]">
+                    <span class="material-symbols-outlined text-sm">deployed_code</span> Deploy Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="auth.js"></script>
+
+<!-- Live Connection Script -->
+<script>
+    const API_BASE = window.nexoraAuth.API_BASE;
+    let pendingDeployId = null;
+
+    // ─── Stat Counter Animation ───
+    function animateValue(el, target, prefix = '', suffix = '') {
+        const duration = 1200, start = 0, startTime = performance.now();
+        function update(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = prefix + Math.floor(start + (target - start) * eased).toLocaleString() + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    function loadStats() {
+        animateValue(document.getElementById('stat-total-licenses'), 1250);
+        animateValue(document.getElementById('stat-active-usage'), 87, '', '%');
+        animateValue(document.getElementById('stat-pending-reclaims'), 24);
+        document.getElementById('stat-savings').textContent = '$4.2k';
+    }
+
+    // ─── Action Feed ───
+    const feedItems = [
+        { icon: 'publish', color: 'primary', title: '<b>Figma Pro</b> reclaimed from <span class="text-on-surface-variant">David K.</span>', time: '2 hours ago' },
+        { icon: 'person_add', color: 'secondary', title: '<b>Adobe CC</b> assigned to <span class="text-on-surface-variant">Sarah M.</span>', time: '5 hours ago' },
+        { icon: 'warning', color: 'tertiary', title: '<b>Slack Enterprise</b> approaching license limit.', time: '1 day ago' },
+        { icon: 'smart_toy', color: 'primary', title: '<b>AutoCAD Floating</b> idle session auto-harvested.', time: '3 hours ago' },
+        { icon: 'security', color: 'secondary', title: 'Anomaly detected: <b>10+ concurrent sessions</b> by admin.', time: '6 hours ago' },
+    ];
+    function renderFeed() {
+        const list = document.getElementById('action-feed-list');
+        list.innerHTML = feedItems.map(item => `
+            <div class="p-4 rounded-lg hover:bg-surface-bright transition-colors cursor-pointer group flex items-start gap-4">
+                <div class="mt-1 h-8 w-8 rounded-full bg-${item.color}/10 text-${item.color} flex items-center justify-center shrink-0 border border-${item.color}/20">
+                    <span class="material-symbols-outlined text-[18px]">${item.icon}</span>
+                </div>
+                <div>
+                    <p class="text-on-surface text-sm">${item.title}</p>
+                    <p class="text-on-surface-variant text-xs mt-1">${item.time}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ─── Page Routing ───
+    const pages = ['dashboard', 'portal-sync'];
+    function showPage(pageId) {
+        pages.forEach(p => {
+            const el = document.getElementById('page-' + p);
+            if (el) el.classList.toggle('hidden', p !== pageId);
+        });
+        if (pageId === 'portal-sync') loadPortalSync();
+        if (pageId === 'dashboard') loadStats();
+    }
+
+    document.querySelectorAll('nav a[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('nav a[data-page]').forEach(l => {
+                l.className = 'text-on-surface-variant hover:text-on-surface font-label text-sm font-medium flex items-center gap-2 transition-colors pb-1';
+                l.querySelector('.material-symbols-outlined').style = '';
+            });
+            link.className = 'text-primary font-label text-sm font-bold flex items-center gap-2 border-b-2 border-primary pb-1';
+            link.querySelector('.material-symbols-outlined').style = "font-variation-settings: 'FILL' 1;";
+            showPage(link.dataset.page);
+        });
+    });
+
+    // ─── Portal Sync: Load Data ───
+    async function loadPortalSync() {
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/updates');
+            const data = await res.json();
+            renderPortalsStrip(data.connectors || []);
+            renderUpdatesTable(data.updates || []);
+            document.getElementById('sync-total').textContent = data.total || 0;
+            document.getElementById('sync-pending').textContent = data.pending || 0;
+            document.getElementById('sync-deployed').textContent = (data.updates || []).filter(u => u.status === 'deployed').length;
+            loadAuditLog();
+        } catch(e) {
+            console.warn('[NEXORA] Portal Sync API unavailable:', e.message);
+        }
+    }
+
+    function renderPortalsStrip(connectors) {
+        const strip = document.getElementById('portals-strip');
+        if (!connectors.length) {
+            strip.innerHTML = '<p class="text-on-surface-variant text-sm italic">No portals connected. Click "Connect Portal" to add one.</p>';
+            return;
+        }
+        strip.innerHTML = connectors.map(c => `
+            <div class="flex-shrink-0 bg-surface-container-low ghost-border rounded-xl px-5 py-4 flex items-center gap-3 min-w-[200px] hover:bg-surface-bright transition-colors cursor-pointer">
+                <div class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-lg">${c.vendor_icon}</span>
+                </div>
+                <div>
+                    <p class="text-on-surface text-sm font-bold">${c.vendor_name}</p>
+                    <p class="text-on-surface-variant text-xs flex items-center gap-1">
+                        <span class="inline-block h-1.5 w-1.5 rounded-full ${c.status === 'connected' ? 'bg-green-400' : 'bg-yellow-400'}"></span>
+                        ${c.status === 'connected' ? 'Synced' : c.status}
+                    </p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    let selectedIds = new Set();
+
+    function renderUpdatesTable(updates) {
+        const tbody = document.getElementById('sync-updates-table');
+        selectedIds.clear();
+        updateBulkBar();
+        if (!updates.length) {
+            tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-on-surface-variant text-sm italic">No updates discovered yet. Click "Sync Now" to poll vendor portals.</td></tr>';
+            return;
+        }
+        const typeBadge = (t) => {
+            const colors = { new_version: 'bg-primary/10 text-primary', new_product: 'bg-secondary/10 text-secondary', license_change: 'bg-tertiary/10 text-tertiary' };
+            const labels = { new_version: 'New Version', new_product: 'New Product', license_change: 'License Change' };
+            return `<span class="px-2.5 py-1 rounded-md text-xs font-bold ${colors[t] || 'bg-surface-container-high text-on-surface-variant'}">${labels[t] || t}</span>`;
+        };
+        const statusBadge = (s) => {
+            const map = { pending_review: 'bg-yellow-500/10 text-yellow-400', deployed: 'bg-green-500/10 text-green-400', dismissed: 'bg-surface-container-high text-on-surface-variant' };
+            return `<span class="px-2.5 py-1 rounded-md text-xs font-bold ${map[s] || ''}">${s.replace('_',' ')}</span>`;
+        };
+        tbody.innerHTML = updates.map(u => `
+            <tr class="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors" id="row-${u.id}">
+                <td class="pl-6 pr-2 py-4 w-10">
+                    ${u.status === 'pending_review' ? `<input type="checkbox" class="custom-checkbox row-cb" data-id="${u.id}" onchange="onRowCheck(this)"/>` : ''}
+                </td>
+                <td class="px-4 py-4"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim text-lg">${u.vendor_icon || 'business'}</span><span class="text-on-surface text-sm">${u.vendor}</span></div></td>
+                <td class="px-4 py-4"><p class="text-on-surface text-sm font-bold">${u.product_name}</p><p class="text-on-surface-variant text-xs mt-0.5 max-w-[200px] truncate">${u.release_notes || ''}</p></td>
+                <td class="px-4 py-4">${typeBadge(u.update_type)}</td>
+                <td class="px-4 py-4 text-on-surface text-sm font-mono">${u.version}</td>
+                <td class="px-4 py-4 text-on-surface-variant text-sm">${new Date(u.detected_at).toLocaleDateString()}</td>
+                <td class="px-4 py-4">${statusBadge(u.status)}</td>
+                <td class="px-4 py-4 text-right">
+                    ${u.status === 'pending_review' ? `
+                        <button onclick="openDeployModal('${u.id}','${u.product_name}','${u.version}','${u.vendor}')" class="px-3 py-1.5 rounded-lg primary-cta text-xs font-bold tracking-wide hover:opacity-90 transition-opacity mr-2 shadow-[0_0_10px_rgba(235,178,255,0.2)]">Initiate</button>
+                        <button onclick="dismissUpdate('${u.id}')" class="px-3 py-1.5 rounded-lg ghost-border text-xs text-on-surface-variant font-bold hover:bg-surface-container-low transition-colors">Dismiss</button>
+                    ` : (u.status === 'deployed' ? `<span class="text-green-400 text-xs flex items-center gap-1 justify-end"><span class="material-symbols-outlined text-sm">check_circle</span> Deployed</span>` : '<span class="text-on-surface-variant text-xs">—</span>')}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ─── Bulk Select Logic ───
+    function toggleSelectAll(el) {
+        const cbs = document.querySelectorAll('.row-cb');
+        cbs.forEach(cb => { cb.checked = el.checked; });
+        selectedIds.clear();
+        if (el.checked) cbs.forEach(cb => selectedIds.add(cb.dataset.id));
+        updateBulkBar();
+    }
+    function onRowCheck(cb) {
+        if (cb.checked) selectedIds.add(cb.dataset.id);
+        else selectedIds.delete(cb.dataset.id);
+        const allCbs = document.querySelectorAll('.row-cb');
+        document.getElementById('select-all-cb').checked = allCbs.length > 0 && selectedIds.size === allCbs.length;
+        updateBulkBar();
+    }
+    function updateBulkBar() {
+        const bar = document.getElementById('bulk-action-bar');
+        const label = document.getElementById('bulk-count-label');
+        if (selectedIds.size > 0) {
+            bar.classList.remove('hidden');
+            document.getElementById('bulk-selected-count').textContent = selectedIds.size + ' selected';
+            if (label) label.textContent = selectedIds.size + ' of ' + document.querySelectorAll('.row-cb').length + ' selected';
+        } else {
+            bar.classList.add('hidden');
+            if (label) label.textContent = '';
+        }
+    }
+    function clearSelection() {
+        selectedIds.clear();
+        document.querySelectorAll('.row-cb').forEach(cb => cb.checked = false);
+        const allCb = document.getElementById('select-all-cb');
+        if (allCb) allCb.checked = false;
+        updateBulkBar();
+    }
+    async function bulkInitiate() {
+        const ids = [...selectedIds];
+        if (!ids.length) return;
+        for (const id of ids) {
+            try {
+                await fetch(API_BASE + '/v1/portal-sync/initiate/' + id, { method: 'POST' });
+            } catch(e) { console.error('Bulk deploy failed for', id, e); }
+        }
+        clearSelection();
+        loadPortalSync();
+    }
+    async function bulkDismiss() {
+        const ids = [...selectedIds];
+        if (!ids.length) return;
+        for (const id of ids) {
+            try {
+                await fetch(API_BASE + '/v1/portal-sync/dismiss/' + id, { method: 'POST' });
+            } catch(e) { console.error('Bulk dismiss failed for', id, e); }
+        }
+        clearSelection();
+        loadPortalSync();
+    }
+
+    // ─── Portal Sync: Actions ───
+    async function triggerManualSync() {
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/sync', { method: 'POST' });
+            const data = await res.json();
+            console.log('[NEXORA] Sync result:', data);
+            loadPortalSync();
+        } catch(e) { console.error('Sync failed:', e); }
+    }
+
+    function openDeployModal(id, product, version, vendor) {
+        pendingDeployId = id;
+        document.getElementById('modal-product').textContent = product;
+        document.getElementById('modal-version').textContent = version;
+        document.getElementById('modal-vendor').textContent = vendor;
+        document.getElementById('modal-target').textContent = `Solar / Vendors / ${vendor} / ${product}`;
+        document.getElementById('deploy-modal').classList.remove('hidden');
+    }
+    function closeDeployModal() {
+        document.getElementById('deploy-modal').classList.add('hidden');
+        pendingDeployId = null;
+    }
+    async function confirmDeploy() {
+        if (!pendingDeployId) return;
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/initiate/' + pendingDeployId, { method: 'POST' });
+            const data = await res.json();
+            console.log('[NEXORA] Deploy result:', data);
+            closeDeployModal();
+            loadPortalSync();
+        } catch(e) { console.error('Deploy failed:', e); }
+    }
+    async function dismissUpdate(id) {
+        try {
+            await fetch(API_BASE + '/v1/portal-sync/dismiss/' + id, { method: 'POST' });
+            loadPortalSync();
+        } catch(e) { console.error('Dismiss failed:', e); }
+    }
+
+    async function loadAuditLog() {
+        try {
+            const res = await fetch(API_BASE + '/v1/portal-sync/audit');
+            const data = await res.json();
+            const container = document.getElementById('sync-audit-log');
+            if (!data.entries || !data.entries.length) {
+                container.innerHTML = '<p class="text-on-surface-variant text-sm italic">No deployments yet.</p>';
+                return;
+            }
+            container.innerHTML = data.entries.map(e => `
+                <div class="flex items-start gap-3 py-2">
+                    <span class="material-symbols-outlined text-sm mt-0.5 ${e.action === 'deploy_to_solar' ? 'text-green-400' : 'text-on-surface-variant'}">deployed_code</span>
+                    <div>
+                        <p class="text-on-surface text-sm"><b>${e.product || '—'}</b> ${e.action === 'deploy_to_solar' ? 'deployed to Solar' : 'dismissed'}</p>
+                        <p class="text-on-surface-variant text-xs">${e.solar_path || ''} &middot; ${new Date(e.timestamp).toLocaleString()}</p>
+                    </div>
+                </div>
+            `).join('');
+        } catch(e) { /* API offline */ }
+    }
+
+    // ─── Auth Guard ───
+    function logout() {
+        window.nexoraAuth.clearSession();
+        window.location.href = 'login.html';
+    }
+
+    // ─── Backend Health ───
+    async function checkBackendHealth() {
+        try {
+            const res = await fetch(API_BASE + '/');
+            const data = await res.json();
+            console.log('[NEXORA] Backend connected:', data.message);
+        } catch(e) { console.warn('[NEXORA] Backend offline. Dashboard running in static mode.'); }
+    }
+
+    // ─── WebSocket Live Listener ───
+    let dashWs;
+    function connectDashWS() {
+        dashWs = new WebSocket('ws://localhost:8000/ws');
+        dashWs.onopen = () => console.log('[NEXORA] WebSocket connected');
+        dashWs.onmessage = (e) => {
+            try {
+                const msg = JSON.parse(e.data);
+                if (msg.event === 'pong') return;
+                console.log('[NEXORA] WS event:', msg.event);
+                // Auto-refresh portal sync if visible
+                if (['portal_added','portal_removed','portal_synced','deployment_complete','status_change'].includes(msg.event)) {
+                    if (!document.getElementById('page-portal-sync').classList.contains('hidden')) {
+                        loadPortalSync();
+                    }
+                }
+            } catch(err) {}
+        };
+        dashWs.onclose = () => setTimeout(connectDashWS, 3000);
+    }
+
+    // ─── Init ───
+    async function bootstrapDashboard() {
+        const user = await window.nexoraAuth.requireRole('sam_user');
+        if (!user) {
+            return;
+        }
+        const userDisplay = document.getElementById('user-display');
+        if (userDisplay) {
+            userDisplay.textContent = user.display_name;
+        }
+        loadStats();
+        renderFeed();
+        checkBackendHealth();
+        connectDashWS();
+    }
+
+    document.addEventListener('DOMContentLoaded', bootstrapDashboard);
+</script>
+
+</body></html>
